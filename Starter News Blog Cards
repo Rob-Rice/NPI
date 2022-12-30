@@ -1,0 +1,238 @@
+<div class="blog-listing-{{name}}">
+  <div class="content-wrapper">
+    <div class="blog-section">
+      <div class="blog-listing-wrapper cell-wrapper">
+        {% if blog_author %}
+        <div class="selected-author">
+          {% if blog_author.avatar %} 
+          <div class="author-avatar" style="background-image:url({{ blog_author.avatar }})"></div> 
+          {% else %}
+          <div class="author-avatar author-avatar__placeholder"></div>
+          {% endif %}
+          <h2 class="author-name">{{ blog_author.display_name }}</h2>
+          <p class="author-bio">{{ blog_author.bio }}</p>
+        </div>
+        {% endif %}
+        <div class="post-listing row clearfix">            
+          {% for content in contents %}
+          {% set halfWidthItems = [5, 6, 10, 11] %}
+          {% if loop.index == 1 %}
+          <div class="col-12">
+            <div class="post-item-full row">
+              <div class="post-content col-md-4">
+                {% if module.show_publish_date %}
+                <p class="post-date tiny">{{ content.publish_date_local_time|datetimeformat('%B %e, %Y') }}</p>
+                {% endif %}
+                <a class="article-link" href="{{content.absolute_url}}">
+                  <h4 class="article-title">{{ content.name }}</h4>   
+                </a>
+                {% if module.show_description %}
+                <div class="listing-body clearfix">
+                  {{ content.meta_description|truncate(110, True, '...') }}
+                </div>
+                {% endif %}
+                {% if module.show_author_name || module.show_topics %}
+                <div class="listing-author clearfix">
+                  <span class="left-aligned">
+                    {% if content.blog_post_author && module.show_author_name %}
+                    <span class="post-by tiny">By</span>  <a class="author-link tiny" href="{{ group.absolute_url }}/author/{{ content.blog_post_author.slug }}">{{ content.blog_post_author.display_name }}</a>
+                    {% endif %}
+                    {% if content.topic_list && module.show_topics %}
+                    {% if module.show_author_name %}
+                    <span class="post-in tiny">In</span>
+                    {% endif %}
+                    <div class="post-topic tiny">    
+                      {% for topic in content.topic_list %}
+                      <a class="topic-link tiny" href="{{ group.absolute_url }}/topic/{{ topic.slug }}">{{ topic.name }}</a>{% if not loop.last %},{% endif %}
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                  </span>
+                </div>
+                {% endif %}
+              </div>
+              <div class="post-feature-image col-md-8" style="background-image:url({{ content.post_list_summary_featured_image }})">
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="item-wrap {% if loop.index % 5 == 0 or loop.index % 5 == 1  %}col-md-6{% else %}col-md-4{% endif %}">
+            <div class="post-item">
+              {% if content.post_list_summary_featured_image %}
+              <a class="article-link" href="{{content.absolute_url}}">
+                <div class="listing-image bg" style="background-image:url({{ content.post_list_summary_featured_image }})">
+                </div>
+              </a>
+              {% endif %}
+              <div class="listing-content font14">
+                 {% if module.show_publish_date %}
+                <p class="post-date tiny">{{ content.publish_date_local_time|datetimeformat('%B %e, %Y') }}</p>
+                {% endif %}
+                <a class="article-link" href="{{content.absolute_url}}">
+                  <h4 class="article-title">{{ content.name }}</h4>
+                </a>
+                {% if module.show_description %}
+                <div class="listing-body clearfix">
+                  {{ content.meta_description|truncate(110, True, '...') }}
+                </div>
+                {% endif %}
+                  {% if module.show_author_name || module.show_topics %}
+                <div class="listing-author clearfix">
+                  <span class="left-aligned">
+                    {% if content.blog_post_author && module.show_author_name %}
+                    <span class="post-by tiny">By</span>  <a class="author-link tiny" href="{{ group.absolute_url }}/author/{{ content.blog_post_author.slug }}">{{ content.blog_post_author.display_name }}</a>
+                    {% endif %}
+                    {% if content.topic_list && module.show_topics %}
+                    {% if module.show_author_name %}
+                    <span class="post-in tiny">In</span>
+                    {% endif %}
+                    <div class="post-topic tiny">    
+                      {% for topic in content.topic_list %}
+                      <a class="topic-link tiny" href="{{ group.absolute_url }}/topic/{{ topic.slug }}">{{ topic.name }}</a>{% if not loop.last %},{% endif %}
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                  </span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
+
+{% require_css %}
+<style>
+  {% scope_css %}
+  .body-container-wrapper {padding: 100px 0 50px;}
+  /*Post Listing*/
+
+   .col-12 {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;padding-right: 15px;padding-left: 15px;}
+   .blog-listing-wrapper .row{display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;}
+   .col-md-6 {-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+    .col-md-8 {-ms-flex: 0 0 66.666667%;flex: 0 0 66.666667%;max-width: 66.666667%;}
+   .col-md-4 {-ms-flex: 0 0 33.333333%;flex: 0 0 33.333333%;max-width: 33.333333%;}
+   .post-listing  .item-wrap {vertical-align:top;padding:15px;}
+   .post-listing .post-item-full {background:#171717 !important;border-radius: 4px;color: #fff;background-repeat: no-repeat;background-size: cover;margin: 0;margin-bottom: 15px;transition: all .4s ease;}
+   .post-listing  .post-feature-image {background-repeat: no-repeat;background-size: cover;background-position: center center;min-height: 240px;border-top-right-radius: 4px;border-bottom-right-radius: 4px;}
+   .post-listing .post-content {padding: 45px 32px;background: #171717 !important;color: #151517;border-top-left-radius: 4px;border-bottom-left-radius: 4px;}
+   .post-listing .listing-author {padding-top: 20px;}
+   .post-listing .post-item-full{border-radius: 4px;}
+   .post-item {position: relative;height: 100%;background: #fff;transition: all .4s ease;border-radius: 4px;}
+   .post-item .listing-image {position:relative;width:100%;display:block;padding-bottom: 52%;overflow:hidden;background:#fff;background-repeat: no-repeat;background-size: 100%;background-position: 50% 50%;
+    border-top-left-radius: 4px;border-top-right-radius: 4px;-webkit-transition: all ease 0.4s;-moz-transition: all ease 0.4s;-o-transition: all ease 0.4s;-ms-transition: all ease 0.4s;transition: all ease 0.4s;}  
+   .post-item .listing-image:before {content:'';width:100%;height:100%;left:0;bottom:0;position:absolute;opacity:0.5;z-index:1;    -webkit-transition: all ease 0.4s;
+    -moz-transition: all ease 0.4s;
+    -o-transition: all ease 0.4s;
+    -ms-transition: all ease 0.4s;
+    transition: all ease 0.4s;;
+  }
+   .post-item:hover .listing-image:before {
+    opacity:0;
+  }
+   .post-item:hover, .post-item-full:hover {
+    -webkit-box-shadow: 0 0 30px 0 rgba(0,0,0,0.25);
+    -moz-box-shadow: 0 0 30px 0 rgba(0,0,0,0.25);
+    -o-box-shadow: 0 0 30px 0 rgba(0,0,0,0.25);
+    -ms-box-shadow: 0 0 30px 0 rgba(0,0,0,0.25);
+    box-shadow: 0 0 30px 0 rgba(0,0,0,0.25);
+/*     transform: translate3D(0,-1px,0) scale(1.01); */
+  }
+   .post-item .listing-image:after {
+    content:'';
+    width:100%;
+    height:100px;
+    left:0;
+    position:absolute;
+    -webkit-transform: skewY(3deg);
+    -moz-transform: skewY(3deg);
+    -o-transform: skewY(3deg);
+    -ms-transform: skewY(3deg);
+    transform: skewY(3deg);;
+    bottom:-90px;
+  }
+
+  .article-title, .post-by  {color: #e8eaed !important;}
+  
+   .post-item .listing-content {text-align: left;padding: 30px 24px;background-color: #171717;border-bottom-left-radius: 4px;border-bottom-right-radius: 4px;}
+   .post-item .left-aligned {float:left;padding:3px 3px 3px 0;}
+   .post-item .right-aligned {float:right;padding:3px 0px 3px 3px;}
+   .post-item .post-topic {padding-top:20px;}
+   .post-item .post-topic img {display:inline-block;vertical-align:baseline;}
+
+   .post-item a.button {padding: 16px 30px 14px;background: #4095b0;text-decoration: none;border: 2px solid #4095b0;color: #fff;display: inline-block;font-size: 14px;text-transform: uppercase;
+    letter-spacing: .1em;font-weight: 500;}
+   .post-topic {display: inline;}
+   .post-date {margin: 0 0 14px;color: #e8eaed;}
+   .article-link {color: #151517;}
+   .listing-body {margin-top: 16px;margin-bottom: 32px;font-size: 16px;color: #e8eaed;}
+
+   /* Related posts. */
+   .related-posts {margin-top: 80px;}
+   .related-posts .related-articles {color: #151517;margin-bottom: 20px;display: inline-block;text-transform: uppercase;font-size: 14px;}
+   .related-posts .see-all {float: right;text-decoration: none;color: #022DFF;}
+  /* Selected Topic Page */
+   .selected-topic ,  .selected-author {text-align: center;margin-top: 50px;margin-bottom: 50px;}
+   .selected-topic .topic-name {text-transform: capitalize;color: #022DFF;}
+   .selected-topic .topic-desc,  .selected-author .author-bio {color: #151517;}
+
+  /* Selected author page */
+   .author-avatar {width: 120px;height: 120px;background-color: #fff;margin-bottom: 40px;border-radius: 50%;margin-left: auto;margin-right: auto;background-repeat: no-repeat;background-size: cover;}
+   .author-avatar__placeholder {background-color: #D8D8D8;}
+   .selected-author .author-name {font-size: 28px;color: #022DFF}
+
+  /* social sticky */
+   .social-content {display: none;}
+
+  @media (min-width: 768px) {
+     .post-item .listing-content {padding-bottom:40px;}
+     .social-content {display: block;visibility: hidden;position: fixed;top: 200px;left: -60px;transition: all .5s ease;}
+     .post-item .listing-author {position: absolute;bottom: 6px;left: 0;right: 0;padding: 10px 24px;}
+     .social-content ul {padding: 0;list-style: none;}
+     .social-sticky {visibility: visible;left: 20px;}
+  }
+
+  /* Repsonsive */
+  @media(min-width: 768px) {
+     .post-header .post-title {font-size: 44px;}
+     .post-body {margin-top:0;margin-bottom:30px !important;}
+     .listing-featured-image {margin-top: 50px;}
+     .post-header .post-title {margin-top: 60px;}
+     .post-listing .post-content {min-height: 380px;}
+     .post-divider {margin: 40px auto;}
+     .search-input input[type=text] {margin-right: 32px;}
+     .selected-topic,  .selected-author {margin-top: 100px;margin-bottom: 100px;} 
+  }
+
+  @media (max-width:991px){
+     .post-listing .post-content {-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+     .post-listing .post-feature-image {-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+     .post-listing .item-wrap.col-md-4 {-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+     .post-listing .item-wrap:last-child {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+     .related-posts .post-listing .item-wrap:last-child {-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
+     .post-listing .post-feature-image {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;min-height: 0;background-size: 100%;padding-bottom: 50%;}
+     .post-listing .post-content {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;min-height: 0;}
+     .post-listing .post-item-full {flex-direction: column-reverse;}
+  }
+  @media (max-width:767px){
+    .body-container-wrapper {padding: 50px 0 50px;}
+     .col-md-6{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+     .post-listing .post-content {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+     .post-listing .post-feature-image {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+     .post-listing .item-wrap.col-md-4 {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+     .post-listing .item-wrap:last-child {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+     .post-listing .post-item-full {flex-direction: column-reverse;}
+     .listing-body {margin-bottom: 0;}
+     .related-posts .post-listing .item-wrap:last-child {-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
+     .about-blog-post .date {display: block;}
+     .about-blog-post .post-topic {margin-right: 0;}
+     .post-listing .post-feature-image {padding-bottom: 52%;background-size: 100%;min-height: 0;}
+  }
+  {% end_scope_css %}
+</style>
+{% end_require_css %}
